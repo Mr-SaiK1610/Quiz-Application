@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Visualizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #2193b0;
+            color: white;
+        }
+
+        .btn:hover {
+            background: #1b7a8f;
+        }
+
+        .visualization-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .algorithm-list {
+            border-right: 1px solid #ddd;
+            padding-right: 20px;
+        }
+
+        .algorithm-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+        }
+
+        .algorithm-btn:hover {
+            background: #2193b0;
+            color: white;
+        }
+
+        .algorithm-btn.active {
+            background: #2193b0;
+            color: white;
+        }
+
+        #canvas-container {
+            position: relative;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .speed-control {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+        }
+
+        .speed-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Algorithm Visualizer</h1>
+            <div class="controls">
+                <button class="btn" id="generate">Generate New Graph</button>
+                <button class="btn" id="start">Start</button>
+                <button class="btn" id="clear">Clear</button>
+            </div>
+        </div>
+
+        <div class="visualization-container">
+            <div class="algorithm-list">
+                <h2>Algorithms</h2>
+                <button class="algorithm-btn" data-algo="bfs">
+                    <i class="fas fa-project-diagram"></i> Breadth First Search
+                </button>
+                <button class="algorithm-btn" data-algo="dfs">
+                    <i class="fas fa-sitemap"></i> Depth First Search
+                </button>
+                <button class="algorithm-btn" data-algo="dijkstra">
+                    <i class="fas fa-route"></i> Dijkstra's Algorithm
+                </button>
+                <button class="algorithm-btn" data-algo="prim">
+                    <i class="fas fa-network-wired"></i> Prim's MST
+                </button>
+            </div>
+            <div id="canvas-container">
+                <canvas id="visualizer"></canvas>
+            </div>
+        </div>
+
+        <div class="speed-control">
+            <label for="speed">Animation Speed:</label>
+            <input type="range" id="speed" class="speed-slider" min="1" max="100" value="50">
+        </div>
+    </div>
+
+    <script>
+        class Graph {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.nodes = [];
+                this.edges = [];
+                this.selectedAlgorithm = null;
+                this.animationSpeed = 50;
+                this.isRunning = false;
+                
+                this.initializeCanvas();
+                this.bindEvents();
+            }
+
+            initializeCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+                this.generateRandomGraph();
+            }
+
+            generateRandomGraph() {
+                this.nodes = [];
+                this.edges = [];
+                
+                // Generate 15 random nodes
+                for(let i = 0; i < 15; i++) {
+                    this.nodes.push({
+                        x: Math.random() * (this.canvas.width - 100) + 50,
+                        y: Math.random() * (this.canvas.height - 100) + 50,
+                        id: i,
+                        visited: false,
+                        distance: Infinity
+                    });
+                }
+
+                // Generate random edges
+                for(let i = 0; i < this.nodes.length; i++) {
+                    for(let j = i + 1; j < this.nodes.length; j++) {
+                        if(Math.random() < 0.3) {
+                            this.edges.push({
+                                from: i,
+                                to: j,
+                                weight: Math.floor(Math.random() * 10) + 1,
+                                visited: false
+                            });
+                        }
+                    }
+                }
+
+                this.draw();
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw edges
+                this.edges.forEach(edge => {
+                    const from = this.nodes[edge.from];
+                    const to = this.nodes[edge.to];
+                    
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(from.x, from.y);
+                    this.ctx.lineTo(to.x, to.y);
+                    this.ctx.strokeStyle = edge.visited ? '#2193b0' : '#999';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+
+                    // Draw weight
+                    const midX = (from.x + to.x) / 2;
+                    const midY = (from.y + to.y) / 2;
+                    this.ctx.fillStyle = '#333';
+                    this.ctx.font = '12px Arial';
+                    this.ctx.fillText(edge.weight, midX, midY);
+                });
+
+                // Draw nodes
+                this.nodes.forEach(node => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+                    this.ctx.fillStyle = node.visited ? '#2193b0' : '#fff';
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = '#2193b0';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+
+                    this.ctx.fillStyle = node.visited ? '#fff' : '#333';
+                    this.ctx.font = '14px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillText(node.id, node.x, node.y);
+                });
+            }
+
+            clearVisualization() {
+                if(this.selectedAlgorithm === 'astar') {
+                    const grid = document.getElementById('grid');
+                    grid.innerHTML = '';
+                    this.startCell = null;
+                    this.endCell = null;
+                    this.initializeGrid();
+                } else {
+                    this.nodes.forEach(node => {
+                        node.visited = false;
+                        node.distance = Infinity;
+                    });
+                    this.edges.forEach(edge => {
+                        edge.visited = false;
+                    });
+                    this.draw();
+                }
+                this.isRunning = false;
+            }
+
+            bindEvents() {
+                document.getElementById('generate').addEventListener('click', () => {
+                    if(this.selectedAlgorithm === 'astar') {
+                        this.clearVisualization();
+                    } else {
+                        this.generateRandomGraph();
+                    }
+                });
+
+                document.getElementById('clear').addEventListener('click', () => {
+                    this.clearVisualization();
+                });
+
+                document.getElementById('start').addEventListener('click', async () => {
+                    if(!this.selectedAlgorithm || this.isRunning) return;
+                    
+                    this.isRunning = true;
+                    
+                    switch(this.selectedAlgorithm) {
+                        case 'bfs':
+                            await this.runBFS(0);
+                            break;
+                        case 'dfs':
+                            await this.runDFS(0);
+                            break;
+                        case 'dijkstra':
+                            await this.runDijkstra(0);
+                            break;
+                        case 'astar':
+                            if(this.startCell && this.endCell) {
+                                await this.runAstar();
+                            }
+                            break;
+                    }
+                });
+
+                document.getElementById('speed').addEventListener('input', (e) => {
+                    this.animationSpeed = parseInt(e.target.value);
+                });
+
+                document.querySelectorAll('.algorithm-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.algorithm-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.selectedAlgorithm = e.target.dataset.algo;
+                    });
+                });
+            }
+        }
+
+        // Initialize the graph
+        const canvas = document.getElementById('visualizer');
+        const graph = new Graph(canvas);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            graph.draw();
+        });
+    </script>
+</body>
+</html>

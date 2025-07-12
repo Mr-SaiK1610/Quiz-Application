@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Concepts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .language-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .python { color: #306998; }
+        .javascript { color: #f7df1e; }
+        .java { color: #007396; }
+        .cpp { color: #00599c; }
+        .ruby { color: #cc342d; }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .topic-list {
+            list-style: none;
+        }
+
+        .topic-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .topic-item:hover {
+            background: #f5f5f5;
+        }
+
+        .topic-content {
+            display: none;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .topic-content.active {
+            display: block;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #2193b0;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #1b7a8f;
+        }
+
+        code {
+            background: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        pre {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Programming Concepts</h1>
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+
+        <div class="languages-grid">
+            <div class="language-card" onclick="showContent('python')">
+                <i class="fab fa-python language-icon python"></i>
+                <h2>Python</h2>
+                <p>Simple and powerful programming language</p>
+            </div>
+            <div class="language-card" onclick="showContent('javascript')">
+                <i class="fab fa-js language-icon javascript"></i>
+                <h2>JavaScript</h2>
+                <p>Web development and beyond</p>
+            </div>
+            <div class="language-card" onclick="showContent('java')">
+                <i class="fab fa-java language-icon java"></i>
+                <h2>Java</h2>
+                <p>Enterprise-level applications</p>
+            </div>
+            <div class="language-card" onclick="showContent('cpp')">
+                <i class="fas fa-code language-icon cpp"></i>
+                <h2>C++</h2>
+                <p>System and game development</p>
+            </div>
+        </div>
+
+        <div id="pythonContent" class="content-section">
+            <h2>Python Programming</h2>
+            <ul class="topic-list">
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    1. Introduction to Python
+                    <div class="topic-content">
+                        <h3>What is Python?</h3>
+                        <p>Python is a high-level, interpreted programming language known for its simplicity and readability.</p>
+                        <h3>Features:</h3>
+                        <ul>
+                            <li>Easy to learn and read</li>
+                            <li>Large standard library</li>
+                            <li>Dynamic typing</li>
+                            <li>Object-oriented programming</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    2. Basic Syntax
+                    <div class="topic-content">
+                        <h3>Variables and Data Types</h3>
+                        <pre>
+# Variables
+name = "John"    # String
+age = 25        # Integer
+height = 1.75   # Float
+is_student = True  # Boolean
+
+# Print variables
+print(f"Name: {name}")
+print(f"Age: {age}")
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    3. Operators
+                    <div class="topic-content">
+                        <h3>Common Operators</h3>
+                        <pre>
+# Arithmetic Operators
+x = 10
+y = 3
+print(x + y)    # Addition: 13
+print(x - y)    # Subtraction: 7
+print(x * y)    # Multiplication: 30
+print(x / y)    # Division: 3.333...
+print(x % y)    # Modulus: 1
+print(x ** y)   # Exponentiation: 1000
+
+# Comparison Operators
+print(x > y)    # True
+print(x < y)    # False
+print(x == y)   # False
+print(x != y)   # True
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    4. Control Structures
+                    <div class="topic-content">
+                        <h3>If Statements and Loops</h3>
+                        <pre>
+# If-elif-else
+age = 18
+if age < 13:
+    print("Child")
+elif age < 20:
+    print("Teenager")
+else:
+    print("Adult")
+
+# For Loop
+for i in range(5):
+    print(i)
+
+# While Loop
+count = 0
+while count < 5:
+    print(count)
+    count += 1
+                        </pre>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="javascriptContent" class="content-section">
+            <h2>JavaScript Programming</h2>
+            <ul class="topic-list">
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    1. Introduction to JavaScript
+                    <div class="topic-content">
+                        <h3>What is JavaScript?</h3>
+                        <p>JavaScript is a versatile programming language primarily used for web development.</p>
+                        <h3>Features:</h3>
+                        <ul>
+                            <li>Client-side scripting</li>
+                            <li>Dynamic content</li>
+                            <li>Event-driven programming</li>
+                            <li>Object-oriented capabilities</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    2. Basic Syntax
+                    <div class="topic-content">
+                        <h3>Variables and Data Types</h3>
+                        <pre>
+// Variables
+let name = "John";       // String
+const age = 25;         // Number
+let isStudent = true;   // Boolean
+let skills = ["JS", "HTML"]; // Array
+let person = {          // Object
+    name: "John",
+    age: 25
+};
+
+// Modern Features
+const { name, age } = person; // Destructuring
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    3. Operators
+                    <div class="topic-content">
+                        <h3>Common Operators</h3>
+                        <pre>
+// Arithmetic Operators
+let x = 10;
+let y = 3;
+console.log(x + y);  // Addition: 13
+console.log(x - y);  // Subtraction: 7
+console.log(x * y);  // Multiplication: 30
+console.log(x / y);  // Division: 3.333...
+console.log(x % y);  // Modulus: 1
+console.log(x ** y); // Exponentiation: 1000
+
+// Comparison Operators
+console.log(x > y);   // true
+console.log(x < y);   // false
+console.log(x === y); // false
+console.log(x !== y); // true
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    4. Control Structures
+                    <div class="topic-content">
+                        <h3>If Statements and Loops</h3>
+                        <pre>
+// If-else
+const age = 18;
+if (age < 13) {
+    console.log("Child");
+} else if (age < 20) {
+    console.log("Teenager");
+} else {
+    console.log("Adult");
+}
+
+// For Loop
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+
+// While Loop
+let count = 0;
+while (count < 5) {
+    console.log(count);
+    count++;
+}
+                        </pre>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="javaContent" class="content-section">
+            <h2>Java Programming</h2>
+            <ul class="topic-list">
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    1. Introduction to Java
+                    <div class="topic-content">
+                        <h3>What is Java?</h3>
+                        <p>Java is a class-based, object-oriented programming language designed to be platform-independent.</p>
+                        <h3>Features:</h3>
+                        <ul>
+                            <li>Platform Independence (Write Once, Run Anywhere)</li>
+                            <li>Object-Oriented</li>
+                            <li>Rich Standard Library</li>
+                            <li>Automatic Memory Management</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    2. Basic Syntax
+                    <div class="topic-content">
+                        <h3>Variables and Data Types</h3>
+                        <pre>
+public class BasicSyntax {
+    public static void main(String[] args) {
+        // Primitive Data Types
+        int age = 25;
+        double height = 1.75;
+        boolean isStudent = true;
+        char grade = 'A';
+
+        // Reference Type
+        String name = "John";
+        
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+    }
+}
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    3. Operators
+                    <div class="topic-content">
+                        <h3>Common Operators</h3>
+                        <pre>
+public class Operators {
+    public static void main(String[] args) {
+        int x = 10;
+        int y = 3;
+        
+        // Arithmetic Operators
+        System.out.println(x + y);  // Addition: 13
+        System.out.println(x - y);  // Subtraction: 7
+        System.out.println(x * y);  // Multiplication: 30
+        System.out.println(x / y);  // Division: 3
+        System.out.println(x % y);  // Modulus: 1
+        
+        // Comparison Operators
+        System.out.println(x > y);  // true
+        System.out.println(x < y);  // false
+        System.out.println(x == y); // false
+        System.out.println(x != y); // true
+    }
+}
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    4. Control Structures
+                    <div class="topic-content">
+                        <h3>If Statements and Loops</h3>
+                        <pre>
+public class ControlStructures {
+    public static void main(String[] args) {
+        int age = 18;
+        
+        // If-else statement
+        if (age < 13) {
+            System.out.println("Child");
+        } else if (age < 20) {
+            System.out.println("Teenager");
+        } else {
+            System.out.println("Adult");
+        }
+        
+        // For loop
+        for (int i = 0; i < 5; i++) {
+            System.out.println(i);
+        }
+        
+        // While loop
+        int count = 0;
+        while (count < 5) {
+            System.out.println(count);
+            count++;
+        }
+    }
+}
+                        </pre>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="cppContent" class="content-section">
+            <h2>C++ Programming</h2>
+            <ul class="topic-list">
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    1. Introduction to C++
+                    <div class="topic-content">
+                        <h3>What is C++?</h3>
+                        <p>C++ is a powerful general-purpose programming language that extends C with object-oriented features.</p>
+                        <h3>Features:</h3>
+                        <ul>
+                            <li>Object-Oriented Programming</li>
+                            <li>Low-level Memory Manipulation</li>
+                            <li>High Performance</li>
+                            <li>Rich Standard Template Library (STL)</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    2. Basic Syntax
+                    <div class="topic-content">
+                        <h3>Variables and Data Types</h3>
+                        <pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // Basic Data Types
+    int age = 25;
+    double height = 1.75;
+    bool isStudent = true;
+    char grade = 'A';
+    string name = "John";
+    
+    cout << "Name: " << name << endl;
+    cout << "Age: " << age << endl;
+    
+    return 0;
+}
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    3. Operators
+                    <div class="topic-content">
+                        <h3>Common Operators</h3>
+                        <pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int x = 10;
+    int y = 3;
+    
+    // Arithmetic Operators
+    cout << x + y << endl;  // Addition: 13
+    cout << x - y << endl;  // Subtraction: 7
+    cout << x * y << endl;  // Multiplication: 30
+    cout << x / y << endl;  // Division: 3
+    cout << x % y << endl;  // Modulus: 1
+    
+    // Comparison Operators
+    cout << (x > y) << endl;  // 1 (true)
+    cout << (x < y) << endl;  // 0 (false)
+    cout << (x == y) << endl; // 0 (false)
+    cout << (x != y) << endl; // 1 (true)
+    
+    return 0;
+}
+                        </pre>
+                    </div>
+                </li>
+                <li class="topic-item" onclick="toggleTopic(this)">
+                    4. Control Structures
+                    <div class="topic-content">
+                        <h3>If Statements and Loops</h3>
+                        <pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int age = 18;
+    
+    // If-else statement
+    if (age < 13) {
+        cout << "Child" << endl;
+    } else if (age < 20) {
+        cout << "Teenager" << endl;
+    } else {
+        cout << "Adult" << endl;
+    }
+    
+    // For loop
+    for (int i = 0; i < 5; i++) {
+        cout << i << endl;
+    }
+    
+    // While loop
+    int count = 0;
+    while (count < 5) {
+        cout << count << endl;
+        count++;
+    }
+    
+    return 0;
+}
+                        </pre>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    <script>
+        function showContent(language) {
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected language content
+            document.getElementById(`${language}Content`).classList.add('active');
+        }
+
+        function toggleTopic(element) {
+            const content = element.querySelector('.topic-content');
+            content.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

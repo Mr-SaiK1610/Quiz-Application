@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Rules & Regulations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rules-container {
+            width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .rules-section {
+            margin-bottom: 30px;
+        }
+
+        .rules-section h2 {
+            color: #2193b0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .rules-list {
+            list-style: none;
+        }
+
+        .rules-list li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .rules-list li:before {
+            content: '\f058';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #2193b0;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-start {
+            background: #2193b0;
+            color: white;
+        }
+
+        .btn-back {
+            background: #666;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 850px) {
+            .rules-container {
+                width: 95%;
+                margin: 10px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rules-container">
+        <h1>Quiz Rules & Regulations</h1>
+        
+        <div class="rules-section">
+            <h2>General Rules</h2>
+            <ul class="rules-list">
+                <li>The quiz consists of multiple-choice questions.</li>
+                <li>Each question has only one correct answer.</li>
+                <li>You cannot go back to previous questions once submitted.</li>
+                <li>Total time allowed is 30 minutes.</li>
+                <li>Each correct answer awards 1 point.</li>
+            </ul>
+        </div>
+
+        <div class="rules-section">
+            <h2>Important Instructions</h2>
+            <ul class="rules-list">
+                <li>Ensure you have a stable internet connection.</li>
+                <li>Do not refresh the page during the quiz.</li>
+                <li>Answer all questions before the timer runs out.</li>
+                <li>Your progress will be auto-saved.</li>
+                <li>Results will be displayed immediately after completion.</li>
+            </ul>
+        </div>
+
+        <div class="rules-section">
+            <h2>Technical Requirements</h2>
+            <ul class="rules-list">
+                <li>Use a modern web browser (Chrome, Firefox, Safari).</li>
+                <li>Enable JavaScript in your browser.</li>
+                <li>Minimum screen resolution: 1024x768.</li>
+            </ul>
+        </div>
+
+        <div class="buttons">
+            <a href="login.html" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
+            <a href="dashboard.html" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="quiz.html" class="btn btn-start">
+                Start Quiz <i class="fas fa-play"></i>
+            </a>
+        </div>
+    </div>
+    
+</body>
+</html>

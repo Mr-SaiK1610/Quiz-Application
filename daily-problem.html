@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem of the Day</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .problem-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .problem-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .difficulty {
+            padding: 5px 15px;
+            border-radius: 15px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .difficulty.easy { background: #27ae60; }
+        .difficulty.medium { background: #f39c12; }
+        .difficulty.hard { background: #e74c3c; }
+
+        .problem-description {
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: #1e1e1e;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            background: #2193b0;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #1b7a8f;
+        }
+
+        .timer {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Problem of the Day</h1>
+            <a href="dashboard.html" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="problem-container">
+            <div id="problemContent"></div>
+            <div class="code-editor">
+                <textarea id="codeEditor" placeholder="Write your solution here..."></textarea>
+            </div>
+            <button class="btn" onclick="submitSolution()">Submit Solution</button>
+        </div>
+    </div>
+
+    <script>
+        const problems = [
+            {
+                title: "Two Sum",
+                difficulty: "easy",
+                description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+                            You may assume that each input would have exactly one solution, and you may not use the same element twice.`,
+                example: `Input: nums = [2,7,11,15], target = 9
+                         Output: [0,1]
+                         Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].`,
+                starterCode: `function twoSum(nums, target) {
+    // Write your code here
+}`
+            },
+            // Add more problems here
+        ];
+
+        function loadDailyProblem() {
+            const today = new Date();
+            const problemIndex = today.getDate() % problems.length;
+            const problem = problems[problemIndex];
+
+            document.getElementById('problemContent').innerHTML = `
+                <h2 class="problem-title">${problem.title}</h2>
+                <span class="difficulty ${problem.difficulty}">${problem.difficulty.toUpperCase()}</span>
+                <div class="problem-description">
+                    <p>${problem.description}</p>
+                    <pre><code>${problem.example}</code></pre>
+                </div>
+            `;
+
+            document.getElementById('codeEditor').value = problem.starterCode;
+        }
+
+        function submitSolution() {
+            const solution = document.getElementById('codeEditor').value;
+            // Here you can add validation logic
+            alert("Solution submitted successfully!");
+            
+            // Save to user progress
+            const username = localStorage.getItem('currentUser');
+            let userProgress = JSON.parse(localStorage.getItem(username + '_progress')) || {
+                quizzes: [],
+                practice: [],
+                dailyProblems: []
+            };
+
+            userProgress.dailyProblems.push({
+                date: new Date().toLocaleDateString(),
+                problem: problems[new Date().getDate() % problems.length].title,
+                solution: solution
+            });
+
+            localStorage.setItem(username + '_progress', JSON.stringify(userProgress));
+        }
+
+        window.onload = loadDailyProblem;
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+</body>
+</html>

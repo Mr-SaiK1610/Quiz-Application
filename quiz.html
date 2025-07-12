@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .timer {
+            background: #2193b0;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2em;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .option:hover {
+            background: #f0f0f0;
+        }
+
+        .option.selected {
+            background: #2193b0;
+            color: white;
+            border-color: #2193b0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+            color: white;
+        }
+
+        .prev-btn {
+            background: #666;
+        }
+
+        .next-btn, .submit-btn {
+            background: #2193b0;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress {
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2193b0;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2>Programming Quiz</h2>
+            <div class="timer">Time: <span id="time">30</span>s</div>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" style="width: 10%"></div>
+        </div>
+
+        <div class="question-container">
+            <h3 class="question" id="question"></h3>
+            <div class="options" id="options"></div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn prev-btn" id="prev" disabled>
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button class="nav-btn next-btn" id="next">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is JavaScript?",
+                options: [
+                    "A programming language",
+                    "A markup language",
+                    "A database",
+                    "An operating system"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which keyword is used to declare variables in JavaScript?",
+                options: ["var", "let", "const", "All of the above"],
+                correct: 3
+            },
+            {
+                question: "What does DOM stand for?",
+                options: [
+                    "Document Object Model",
+                    "Data Object Model",
+                    "Digital Ordinance Model",
+                    "Document Oriented Model"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which method is used to add elements at the end of an array?",
+                options: ["push()", "pop()", "shift()", "unshift()"],
+                correct: 0
+            },
+            {
+                question: "What is the correct way to check if 'x' is equal to 'y'?",
+                options: ["x = y", "x == y", "x === y", "x => y"],
+                correct: 2
+            },
+            {
+                question: "Which loop is guaranteed to execute at least once?",
+                options: ["for loop", "while loop", "do-while loop", "forEach loop"],
+                correct: 2
+            },
+            {
+                question: "What is the purpose of 'this' keyword in JavaScript?",
+                options: [
+                    "Refers to the current object",
+                    "Refers to the previous object",
+                    "Refers to the next object",
+                    "None of the above"
+                ],
+                correct: 0
+            },
+            {
+                question: "What is a callback function?",
+                options: [
+                    "A function that calls another function",
+                    "A function passed as an argument to another function",
+                    "A function that returns another function",
+                    "A function that calls itself"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which operator is used for string concatenation?",
+                options: ["+", "&", "*", "|"],
+                correct: 0
+            },
+            {
+                question: "What is the output of typeof null?",
+                options: ["null", "undefined", "object", "number"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = new Array(questions.length).fill(null);
+        let timeLeft = 30;
+        let timer;
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question').textContent = `${currentQuestion + 1}. ${question.question}`;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.className = `option ${answers[currentQuestion] === index ? 'selected' : ''}`;
+                button.textContent = option;
+                button.onclick = () => selectOption(index);
+                optionsContainer.appendChild(button);
+            });
+
+            document.getElementById('prev').disabled = currentQuestion === 0;
+            document.getElementById('next').textContent = currentQuestion === questions.length - 1 ? 'Submit' : 'Next';
+            
+            updateProgress();
+            resetTimer();
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            loadQuestion();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.querySelector('.progress-bar').style.width = `${progress}%`;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 30;
+            updateTimer();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft === 0) {
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            document.getElementById('time').textContent = timeLeft;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timer);
+            const score = answers.reduce((total, answer, index) => 
+                total + (answer === questions[index].correct ? 1 : 0), 0);
+            
+            localStorage.setItem('quizScore', score);
+            window.location.href = 'results.html';
+        }
+
+        document.getElementById('prev').onclick = previousQuestion;
+        document.getElementById('next').onclick = nextQuestion;
+
+        loadQuestion();
+    </script>
+</body>
+</html>

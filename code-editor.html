@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .problem-description {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        #editor {
+            height: 400px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .output {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #2193b0;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #1b7a8f;
+        }
+
+        .submit-btn {
+            background: #27ae60;
+        }
+
+        .toggle-theme {
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .difficulty {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .easy { background: #27ae60; color: white; }
+        .medium { background: #f39c12; color: white; }
+        .hard { background: #e74c3c; color: white; }
+
+        .dark-mode {
+            background: #2c3e50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Code Editor</h1>
+            <span class="toggle-theme" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </span>
+            <a href="practice-coding.html" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Problems
+            </a>
+        </div>
+
+        <div class="problem-description">
+            <h2 id="problemTitle">Problem Title</h2>
+            <p id="problemDescription">Problem description will be displayed here.</p>
+        </div>
+
+        <div id="editor">// Write your code here</div>
+
+        <div class="button-group" style="margin: 20px 0; display: flex; gap: 10px;">
+            <button class="btn" onclick="runCode()">Run Code</button>
+            <button class="btn submit-btn" onclick="submitCode()">Submit Solution</button>
+        </div>
+
+        <div class="output">
+            <h3>Output:</h3>
+            <pre id="output"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Initialize ACE editor
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+        editor.setOption("useWorker", true);
+
+        // Get problem details from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const problemId = urlParams.get('problem') || "default";
+        const language = urlParams.get('lang') || "javascript";
+        const title = urlParams.get('title') || "Problem Title";
+        const difficulty = urlParams.get('difficulty') || "easy";
+
+        function setEditorLanguage(lang) {
+            const languageModes = {
+                'python': 'python',
+                'javascript': 'javascript',
+                'java': 'java'
+            };
+            editor.session.setMode(`ace/mode/${languageModes[lang] || 'text'}`);
+        }
+
+        function loadTemplate() {
+            const templates = {
+                'python': {
+                    'default': `# Write your Python solution here\nprint("Hello, Python!")`
+                },
+                'javascript': {
+                    'default': `// Write your JavaScript solution here\nconsole.log("Hello, JavaScript!");`
+                },
+                'java': {
+                    'default': `// Write your Java solution here\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Java!");\n    }\n}`
+                }
+            };
+
+            const template = templates[language]?.[problemId] || templates[language]['default'];
+            editor.setValue(template);
+            editor.clearSelection();
+        }
+
+        window.onload = function() {
+            setEditorLanguage(language);
+            loadTemplate();
+            document.getElementById('problemTitle').textContent = title;
+            document.getElementById('problemDescription').textContent = urlParams.get('description') || "No description provided.";
+            document.getElementById('problemTitle').innerHTML += ` <span class="difficulty ${difficulty}">${difficulty}</span>`;
+
+            // Restore dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add("dark-mode");
+            }
+        };
+
+        function runCode() {
+            const code = editor.getValue();
+            localStorage.setItem(problemId, code);
+
+            document.getElementById('output').innerHTML = "Executing...";
+
+            fetch('https://your-backend.com/run-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ language, code })
+            })
+            .then(response => response.json())
+            .then(data => document.getElementById('output').innerText = data.output)
+            .catch(error => document.getElementById('output').innerText = "Error: " + error);
+        }
+
+        function submitCode() {
+            const username = localStorage.getItem('currentUser') || "Guest";
+            let progress = JSON.parse(localStorage.getItem(username + '_progress')) || { practice: [] };
+            progress.practice.unshift({ problem: title, language, status: 'Completed', date: new Date().toLocaleDateString() });
+            localStorage.setItem(username + '_progress', JSON.stringify(progress));
+
+            document.getElementById('output').innerText = 'Solution submitted successfully!';
+            setTimeout(() => window.location.href = 'practice-coding.html', 2000);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem('darkMode', document.body.classList.contains("dark-mode") ? 'enabled' : 'disabled');
+        }
+    </script>
+</body>
+</html>
